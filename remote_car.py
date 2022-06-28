@@ -1,10 +1,33 @@
 import time
-import ultrasonic
 import keyboard
 
 from TCPClient import TCPClient
 from Command import COMMAND as cmd
-from time import sleep
+
+
+def GoForward():
+    tcp.sendData(cmd.CMD_FORWARD + str(100))
+    time.sleep(0.1)
+    tcp.sendData(cmd.CMD_STOP)
+    print("Forward.")
+
+def GoBackward():
+    tcp.sendData(cmd.CMD_BACKWARD + str(100))
+    time.sleep(0.1)
+    tcp.sendData(cmd.CMD_STOP)
+    print("Backward.")
+
+def GoLeft():
+    tcp.sendData(cmd.CMD_TURN_LEFT + str(8))
+    """time.sleep(0.1)"""
+    tcp.sendData(cmd.CMD_STOP)
+    print("Left.")
+
+def GoRight():
+    tcp.sendData(cmd.CMD_TURN_LEFT + str(8))
+    time.sleep(0.1)
+    tcp.sendData(cmd.CMD_STOP)
+    print("Left.")
 
 print("REMOTE CAR")
 print("-------------------")
@@ -24,27 +47,27 @@ except Exception as e:
     print("Connection to server", SERVER_IP, "failed!")
     exit(1)
 
+
 print("Connection successful!")
 
-print("center wheels")
-tcp.sendData(cmd.CMD_TURN_LEFT + str(8))
+''' Center wheels '''
+tcp.sendData(cmd.CMD_TURN_LEFT + str(50))
 
+while True:
+    if keyboard.is_pressed("w"):
+        GoForward()
 
-print("green led - program starting")
-tcp.sendData(cmd.CMD_RGB_G)
-time.sleep(1)
-tcp.sendData(cmd.CMD_RGB_G)
+    elif keyboard.is_pressed("s"):
+        GoBackward()
 
-tcp.sendData(cmd.CMD_TURN_LEFT + str(8))
+    elif keyboard.is_pressed("a"):
+        GoLeft()
 
-        
-""" end of code """
+    elif keyboard.is_pressed("d"):
+        GoRight()
 
-
-print("blue led - program stopped")
-tcp.sendData(cmd.CMD_RGB_B)
-time.sleep(1)
-tcp.sendData(cmd.CMD_RGB_B)
+    elif keyboard.is_pressed("Esc"):
+        break
 
 tcp.sendData(cmd.CMD_STOP)
 
